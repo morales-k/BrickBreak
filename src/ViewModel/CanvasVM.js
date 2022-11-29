@@ -1,6 +1,12 @@
 const dpr = window.devicePixelRatio || 1;
-const radius = 14;
-const barWidth = 120;
+export const radius = 14;
+export const barWidth = 120;
+export let mouseX = 100;
+let bounce = false;
+let dx = 2;
+let dy = -2;
+let ballX = mouseX + (barWidth / 2);
+let ballY= window.innerHeight - (100 + radius);
 
 /**
  * Sets & scales canvas by dpr to fix blur.
@@ -8,7 +14,7 @@ const barWidth = 120;
  * @param {object} canvas - Canvas element itself.
  * @returns 
  */
-export function setupCanvas(canvas) {
+export function setupCanvas(canvas, setCanvasReady) {
     const rect = canvas.current.getBoundingClientRect();
     const ctx = canvas.current.getContext('2d');
 
@@ -17,93 +23,86 @@ export function setupCanvas(canvas) {
     canvas.height = window.innerHeight * dpr;
 
     ctx.scale(dpr, dpr);
+    setCanvasReady(true);
     return ctx;
+}
+
+/**
+ * Handles key press events.
+ * 
+ * @param {string} key - Pressed key.
+ */
+export function handleKeys(key) {
+    if (key === " ") {
+        bounce = true;
+    }
 }
 
 /**
  * Clears & redraws the canvas.
  * 
  * @param {object} canvas - The canvas element itself.
- * @param {number} mouseX - X coordinate of the mouse.
- * @param {number} mouseY - Y coordinate of the mouse.
  */
-export function draw(canvas, mouseX, mouseY) {
+export function draw(canvas) {
     const ctx = canvas.current.getContext('2d');
     const rect = canvas.current.getBoundingClientRect();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    bar(ctx, mouseX);
-    ball(ctx, mouseX);
+    bar(ctx, mouseX); 
+
+    if (bounce) {
+        //Reverse dx/dy when the radius touches an edge.
+        if (ballX + dx > rect.width - radius || ballX + dx < radius) {
+            dx = -dx;
+        }
+
+        if (ballY + dy > rect.height - radius || ballY + dy < radius) {
+            dy = -dy;
+        }
+
+        ballX += dx;
+        ballY += dy;
+
+        ball(ctx);
+    } else {
+        ballX = mouseX + (barWidth / 2);
+        ball(ctx);
+    }
 }
-
-// /**
-//  * Updates mouse coordinates & detects canvas edge.
-//  * 
-//  * @param {object} e - The event object.
-//  * @param {object} canvas - The canvas element itself.
-//  * @param {number} mouseX - X coordinate of the mouse.
-//  * @param {number} mouseY - Y coordinate of the mouse.
-//  */
-// export function trackMouse(e, canvas, setMouseX, setMouseY) {
-//     const rect = canvas.current.getBoundingClientRect();
-//     const leftEdgeCollision = e.clientX <= radius ? true : false;
-//     const rightEdgeCollision = e.clientX >= rect.width - radius ? true : false;
-//     const topEdgeCollision = e.clientY <= radius ? true : false;
-//     const bottomEdgeCollision = e.clientY >= rect.height - radius ? true : false;
-
-//     // Reset coords if mouse touches edge.
-//     if (leftEdgeCollision) {
-//         setMouseX(radius);
-//     } else if (topEdgeCollision) {
-//         setMouseY(radius);
-//     } else if (rightEdgeCollision) {
-//         setMouseX(rect.width - radius);
-//     } else if (bottomEdgeCollision) {
-//         setMouseY(rect.height - radius);
-//     } else {
-//         // In bounds. Update coords.
-//         setMouseX(e.clientX);
-//         setMouseY(e.clientY);
-//     }
-// }
 
 /**
  * Updates mouse coordinates & detects canvas edge.
  * 
  * @param {object} e - The event object.
  * @param {object} canvas - The canvas element itself.
- * @param {number} mouseX - X coordinate of the mouse.
  */
- export function trackMouse(e, canvas, setMouseX) {
+ export function trackMouse(e, canvas) {
     const rect = canvas.current.getBoundingClientRect();
     const leftEdgeCollision = e.clientX <= 0 ? true : false;
     const rightEdgeCollision = e.clientX >= rect.width - barWidth ? true : false;
 
     // Reset coords if mouse touches edge.
     if (leftEdgeCollision) {
-        setMouseX(0);
+        mouseX = 0;
     } else if (rightEdgeCollision) {
-        setMouseX(rect.width - barWidth);
+        mouseX = rect.width - barWidth;
     } else {
-        // In bounds. Update coords.
-        setMouseX(e.clientX);
+        mouseX = e.clientX;
     }
 }
 
 /**
- * Draws a ball at mouseX, mouseY.
+ * Draws initial ball on bar. Uses posX/posY if present.
  * 
  * @param {object} ctx - The context of the canvas object.
- * @param {number} mouseX - X coordinate of the mouse.
- * @param {number} mouseY - Y coordinate of the mouse.
+ * @param {number} ballX - X coordinate of the ball.
+ * @param {number} ballY - Y coordinate of the ball.
  */
- export const ball = (ctx, mouseX, mouseY) => {
-    const posX = mouseX + (barWidth / 2);
-    const posY = window.innerHeight - (100 + radius);
+ export const ball = (ctx) => {
     ctx.beginPath();
-    ctx.arc(posX, posY, radius, 0, 2*Math.PI, false);
+    ctx.arc(ballX, ballY, radius, 0, 2*Math.PI, false);
     ctx.fillStyle = '#ccc';
     ctx.fill();
     ctx.lineWidth = 1.5;
@@ -124,5 +123,4 @@ export function draw(canvas, mouseX, mouseY) {
     ctx.lineJoin = "round";
     ctx.lineWidth = 1.5;
     ctx.stroke();
-    
 };
