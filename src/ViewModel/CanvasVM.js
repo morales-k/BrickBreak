@@ -103,7 +103,7 @@ export function draw(canvas) {
  export const ball = (ctx) => {
     ctx.beginPath();
     ctx.arc(ballX, ballY, radius, 0, 2*Math.PI, false);
-    ctx.fillStyle = '#ccc';
+    ctx.fillStyle = '#728C8A';
     ctx.fill();
     ctx.lineWidth = 1.5;
     ctx.stroke();
