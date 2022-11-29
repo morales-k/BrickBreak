@@ -1,37 +1,41 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { setupCanvas, draw, trackMouse } from '../ViewModel/CanvasVM';
+import { setupCanvas, handleKeys, draw, trackMouse } from '../ViewModel/CanvasVM';
 
 function Canvas() {
-  const [mouseX, setMouseX] = useState(100);
-  const [mouseY, setMouseY] = useState(100);
+  const [canvasReady, setCanvasReady] = useState(false);
   const canvas = useRef();
 
   // Set up resize listener for responsive canvas.
   useEffect(() => {
-    setupCanvas(canvas);
+    setupCanvas(canvas, setCanvasReady);
 
     window.addEventListener('resize', () => {
-      setupCanvas(canvas);
+      setupCanvas(canvas, setCanvasReady);
     });
 
-    // Clean up
+    window.addEventListener('keyup', (e) => handleKeys(e.key));
+
+     // Clean up
     return () => {
       window.removeEventListener('resize', () => {
-        setupCanvas(canvas);
+        setupCanvas(canvas, setCanvasReady);
       });
+
+      window.removeEventListener('keyup', (e) => handleKeys(e.key));
     };
   }, []);
 
-  // Redraw when mouse coords update.
   useEffect(() => {
-    draw(canvas, mouseX, mouseY);
-  }, [mouseX, mouseY]);
+    if (canvasReady) {
+      setInterval(() => draw(canvas), 10);
+    }
+  }, [canvasReady]);
 
   return (
     <canvas 
       id="canvas" 
       ref={canvas} 
-      onMouseMove={(e) => trackMouse(e, canvas, setMouseX, setMouseY)} />
+      onMouseMove={(e) => trackMouse(e, canvas)} />
   )
 }
 
