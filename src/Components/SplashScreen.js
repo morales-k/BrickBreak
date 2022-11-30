@@ -1,10 +1,15 @@
 import React from 'react'
+import Button from './Button'
 
 function SplashScreen(props) {
+  const { toggleStart } = props;
+
   return (
     <>
       <h1>Title</h1>
-      <button className="start-btn" onClick={() => props.toggleStart(true)}>Start</button>
+      <Button
+        style="start-btn"
+        perform={() => toggleStart(true)} />
     </>
   )
 }
