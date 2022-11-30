@@ -5,8 +5,9 @@ export let mouseX = 100;
 let bounce = false;
 let dx = 2;
 let dy = -2;
+let initBallPosY = window.innerHeight - (100 + radius);
 let ballX = mouseX + (barWidth / 2);
-let ballY= window.innerHeight - (100 + radius);
+let ballY = initBallPosY;
 
 /**
  * Sets & scales canvas by dpr to fix blur.
@@ -42,8 +43,9 @@ export function handleKeys(key) {
  * Clears & redraws the canvas.
  * 
  * @param {object} canvas - The canvas element itself.
+ * @param {function} setModal - Sets if the modal should display.
  */
-export function draw(canvas) {
+export function draw(canvas, setModal) {
     const ctx = canvas.current.getContext('2d');
     const rect = canvas.current.getBoundingClientRect();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -51,7 +53,7 @@ export function draw(canvas) {
     canvas.height = rect.height * dpr;
 
     bar(ctx, mouseX); 
-    updateBall(ctx, rect);
+    updateBall(ctx, rect, setModal);
 }
 
 /**
@@ -60,8 +62,9 @@ export function draw(canvas) {
  * 
  * @param {object} ctx - The context of the canvas object.
  * @param {object} rect - The bounding rect of the canvas.
+ * @param {object} setModal - Sets if the modal should display.
  */
-function updateBall(ctx, rect) {
+function updateBall(ctx, rect, setModal) {
     if (bounce) {
         if (ballX + dx > rect.width - radius || ballX + dx < radius) {
             dx = -dx;
@@ -71,11 +74,24 @@ function updateBall(ctx, rect) {
             dy = -dy;
         }
 
+        if (ballX + dx >= mouseX && 
+            ballX + dx <= mouseX + barWidth && 
+            ballY + dy === initBallPosY) {
+            dx = -dx;
+            dy = -dy;
+        }
+
+        if (ballY + dy > initBallPosY) {
+            bounce = false;
+            setModal(true);
+        }
+
         ballX += dx;
         ballY += dy;
         ball(ctx);
     } else {
         ballX = mouseX + (barWidth / 2);
+        ballY = initBallPosY;
         ball(ctx);
     }
 }
@@ -109,8 +125,9 @@ function updateBall(ctx, rect) {
  export const ball = (ctx) => {
     ctx.beginPath();
     ctx.arc(ballX, ballY, radius, 0, 2*Math.PI, false);
-    ctx.fillStyle = '#728C8A';
+    ctx.fillStyle = '#7C9CA3';
     ctx.fill();
+    ctx.strokeStyle = '#4E6266';
     ctx.lineWidth = 1.5;
     ctx.stroke();
 };
@@ -124,9 +141,10 @@ function updateBall(ctx, rect) {
  export const bar = (ctx, mouseX) => {
     ctx.beginPath();
     ctx.rect(mouseX, (window.innerHeight - 100), barWidth, 25);
-    ctx.fillStyle = '#299a9c';
+    ctx.fillStyle = '#749981';
     ctx.fill();
-    ctx.lineJoin = "round";
+    ctx.strokeStyle = '#4A6152';
     ctx.lineWidth = 1.5;
+    ctx.lineJoin = "round";
     ctx.stroke();
 };
