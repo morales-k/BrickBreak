@@ -51,9 +51,18 @@ export function draw(canvas) {
     canvas.height = rect.height * dpr;
 
     bar(ctx, mouseX); 
+    updateBall(ctx, rect);
+}
 
+/**
+ * If bounce is true, reverses ball direction if an edge is hit.
+ * Else, sets ballX to bar center.
+ * 
+ * @param {object} ctx - The context of the canvas object.
+ * @param {object} rect - The bounding rect of the canvas.
+ */
+function updateBall(ctx, rect) {
     if (bounce) {
-        //Reverse dx/dy when the radius touches an edge.
         if (ballX + dx > rect.width - radius || ballX + dx < radius) {
             dx = -dx;
         }
@@ -64,7 +73,6 @@ export function draw(canvas) {
 
         ballX += dx;
         ballY += dy;
-
         ball(ctx);
     } else {
         ballX = mouseX + (barWidth / 2);
@@ -94,11 +102,9 @@ export function draw(canvas) {
 }
 
 /**
- * Draws initial ball on bar. Uses posX/posY if present.
+ * Draws the ball.
  * 
  * @param {object} ctx - The context of the canvas object.
- * @param {number} ballX - X coordinate of the ball.
- * @param {number} ballY - Y coordinate of the ball.
  */
  export const ball = (ctx) => {
     ctx.beginPath();
