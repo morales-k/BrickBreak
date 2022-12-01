@@ -5,8 +5,9 @@ export let mouseX = 100;
 let bounce = false;
 let dx = 2;
 let dy = -2;
+let initBallPosY = window.innerHeight - (100 + radius);
 let ballX = mouseX + (barWidth / 2);
-let ballY= window.innerHeight - (100 + radius);
+let ballY = initBallPosY;
 
 /**
  * Sets & scales canvas by dpr to fix blur.
@@ -42,8 +43,9 @@ export function handleKeys(key) {
  * Clears & redraws the canvas.
  * 
  * @param {object} canvas - The canvas element itself.
+ * @param {function} toggleModal - Sets if the modal should display.
  */
-export function draw(canvas) {
+export function draw(canvas, toggleModal) {
     const ctx = canvas.current.getContext('2d');
     const rect = canvas.current.getBoundingClientRect();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -51,9 +53,19 @@ export function draw(canvas) {
     canvas.height = rect.height * dpr;
 
     bar(ctx, mouseX); 
+    updateBall(ctx, rect, toggleModal);
+}
 
+/**
+ * If bounce is true, reverses ball direction if an edge is hit.
+ * Else, sets ballX to bar center.
+ * 
+ * @param {object} ctx - The context of the canvas object.
+ * @param {object} rect - The bounding rect of the canvas.
+ * @param {object} toggleModal - Sets if the modal should display.
+ */
+function updateBall(ctx, rect, toggleModal) {
     if (bounce) {
-        //Reverse dx/dy when the radius touches an edge.
         if (ballX + dx > rect.width - radius || ballX + dx < radius) {
             dx = -dx;
         }
@@ -62,12 +74,29 @@ export function draw(canvas) {
             dy = -dy;
         }
 
+        if (ballX + dx >= mouseX && 
+            ballX + dx <= mouseX + barWidth && 
+            ballY + dy === initBallPosY) {
+            dx = -dx;
+            dy = -dy;
+        }
+
+        if (ballY > initBallPosY) {
+            dy = -dy; // Reverse dy so ball moves up on restart.
+            bounce = false;
+            toggleModal(true);
+        }
+
+        if (ballY < initBallPosY) {
+            toggleModal(false);
+        }
+
         ballX += dx;
         ballY += dy;
-
         ball(ctx);
     } else {
         ballX = mouseX + (barWidth / 2);
+        ballY = initBallPosY;
         ball(ctx);
     }
 }
@@ -94,17 +123,16 @@ export function draw(canvas) {
 }
 
 /**
- * Draws initial ball on bar. Uses posX/posY if present.
+ * Draws the ball.
  * 
  * @param {object} ctx - The context of the canvas object.
- * @param {number} ballX - X coordinate of the ball.
- * @param {number} ballY - Y coordinate of the ball.
  */
  export const ball = (ctx) => {
     ctx.beginPath();
     ctx.arc(ballX, ballY, radius, 0, 2*Math.PI, false);
-    ctx.fillStyle = '#728C8A';
+    ctx.fillStyle = '#7C9CA3';
     ctx.fill();
+    ctx.strokeStyle = '#4E6266';
     ctx.lineWidth = 1.5;
     ctx.stroke();
 };
@@ -118,9 +146,10 @@ export function draw(canvas) {
  export const bar = (ctx, mouseX) => {
     ctx.beginPath();
     ctx.rect(mouseX, (window.innerHeight - 100), barWidth, 25);
-    ctx.fillStyle = '#299a9c';
+    ctx.fillStyle = '#749981';
     ctx.fill();
-    ctx.lineJoin = "round";
+    ctx.strokeStyle = '#4A6152';
     ctx.lineWidth = 1.5;
+    ctx.lineJoin = "round";
     ctx.stroke();
 };
