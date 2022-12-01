@@ -43,9 +43,9 @@ export function handleKeys(key) {
  * Clears & redraws the canvas.
  * 
  * @param {object} canvas - The canvas element itself.
- * @param {function} setModal - Sets if the modal should display.
+ * @param {function} toggleModal - Sets if the modal should display.
  */
-export function draw(canvas, setModal) {
+export function draw(canvas, toggleModal) {
     const ctx = canvas.current.getContext('2d');
     const rect = canvas.current.getBoundingClientRect();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -53,7 +53,7 @@ export function draw(canvas, setModal) {
     canvas.height = rect.height * dpr;
 
     bar(ctx, mouseX); 
-    updateBall(ctx, rect, setModal);
+    updateBall(ctx, rect, toggleModal);
 }
 
 /**
@@ -62,9 +62,9 @@ export function draw(canvas, setModal) {
  * 
  * @param {object} ctx - The context of the canvas object.
  * @param {object} rect - The bounding rect of the canvas.
- * @param {object} setModal - Sets if the modal should display.
+ * @param {object} toggleModal - Sets if the modal should display.
  */
-function updateBall(ctx, rect, setModal) {
+function updateBall(ctx, rect, toggleModal) {
     if (bounce) {
         if (ballX + dx > rect.width - radius || ballX + dx < radius) {
             dx = -dx;
@@ -81,9 +81,10 @@ function updateBall(ctx, rect, setModal) {
             dy = -dy;
         }
 
-        if (ballY + dy > initBallPosY) {
+        if (ballY > initBallPosY) {
+            dy = -dy; // Reverse dy so ball moves up on restart.
             bounce = false;
-            setModal(true);
+            toggleModal(true);
         }
 
         ballX += dx;
