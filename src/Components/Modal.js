@@ -1,6 +1,5 @@
 import React from 'react';
 import Button from './Button';
-import { restartGame } from '../ViewModel/CanvasVM';
 
 const Modal = (props) => {
     const { show, toggleModal } = props;
@@ -9,10 +8,11 @@ const Modal = (props) => {
     return (
         <div className={show ? "modal" : "hidden"}>
             <h1>Game Over</h1>
-            <h2>Play again?</h2>
+            <h2>You scored 0</h2>
             <Button
                 style="restart-btn"
-                perform={() => hideModal()} />
+                perform={() => hideModal()}
+                text="Play again" />
         </div>
     )
 }

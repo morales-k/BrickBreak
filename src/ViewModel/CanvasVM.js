@@ -87,6 +87,10 @@ function updateBall(ctx, rect, toggleModal) {
             toggleModal(true);
         }
 
+        if (ballY < initBallPosY) {
+            toggleModal(false);
+        }
+
         ballX += dx;
         ballY += dy;
         ball(ctx);

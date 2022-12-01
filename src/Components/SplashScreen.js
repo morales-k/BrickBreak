@@ -9,7 +9,8 @@ function SplashScreen(props) {
       <h1>Title</h1>
       <Button
         style="start-btn"
-        perform={() => toggleStart(true)} />
+        perform={() => toggleStart(true)}
+        text="Start" />
     </>
   )
 }
