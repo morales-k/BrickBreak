@@ -8,6 +8,16 @@ let dy = -2;
 let initBallPosY = window.innerHeight - (100 + radius);
 let ballX = mouseX + (barWidth / 2);
 let ballY = initBallPosY;
+const brickRows = 3;
+const brickCols = 5;
+const brickWidth = 75;
+const brickHeight = 20;
+const brickPadding = 10;
+const brickLayoutWidth = brickCols * (brickWidth + brickPadding);
+const brickLayoutOrigin = (window.innerWidth / 2) - (brickLayoutWidth / 2);
+const brickOffsetLeft = brickLayoutOrigin;
+const brickOffsetTop = 30;
+const bricks = [];
 
 /**
  * Sets & scales canvas by dpr to fix blur.
@@ -24,6 +34,7 @@ export function setupCanvas(canvas, setCanvasReady) {
     canvas.height = window.innerHeight * dpr;
 
     ctx.scale(dpr, dpr);
+    createBrickArray();
     setCanvasReady(true);
     return ctx;
 }
@@ -40,6 +51,27 @@ export function handleKeys(key) {
 }
 
 /**
+ * Updates mouse coordinates & detects canvas edge.
+ * 
+ * @param {object} e - The event object.
+ * @param {object} canvas - The canvas element itself.
+ */
+ export function trackMouse(e, canvas) {
+    const rect = canvas.current.getBoundingClientRect();
+    const leftEdgeCollision = e.clientX <= 0 ? true : false;
+    const rightEdgeCollision = e.clientX >= rect.width - barWidth ? true : false;
+
+    // Reset coords if mouse touches edge.
+    if (leftEdgeCollision) {
+        mouseX = 0;
+    } else if (rightEdgeCollision) {
+        mouseX = rect.width - barWidth;
+    } else {
+        mouseX = e.clientX;
+    }
+}
+
+/**
  * Clears & redraws the canvas.
  * 
  * @param {object} canvas - The canvas element itself.
@@ -52,8 +84,10 @@ export function draw(canvas, toggleModal) {
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
 
+    brickField(ctx);
     bar(ctx, mouseX); 
     updateBall(ctx, rect, toggleModal);
+    detectBrickCollision();
 }
 
 /**
@@ -102,32 +136,11 @@ function updateBall(ctx, rect, toggleModal) {
 }
 
 /**
- * Updates mouse coordinates & detects canvas edge.
- * 
- * @param {object} e - The event object.
- * @param {object} canvas - The canvas element itself.
- */
- export function trackMouse(e, canvas) {
-    const rect = canvas.current.getBoundingClientRect();
-    const leftEdgeCollision = e.clientX <= 0 ? true : false;
-    const rightEdgeCollision = e.clientX >= rect.width - barWidth ? true : false;
-
-    // Reset coords if mouse touches edge.
-    if (leftEdgeCollision) {
-        mouseX = 0;
-    } else if (rightEdgeCollision) {
-        mouseX = rect.width - barWidth;
-    } else {
-        mouseX = e.clientX;
-    }
-}
-
-/**
  * Draws the ball.
  * 
  * @param {object} ctx - The context of the canvas object.
  */
- export const ball = (ctx) => {
+const ball = (ctx) => {
     ctx.beginPath();
     ctx.arc(ballX, ballY, radius, 0, 2*Math.PI, false);
     ctx.fillStyle = '#7C9CA3';
@@ -143,7 +156,7 @@ function updateBall(ctx, rect, toggleModal) {
  * @param {object} ctx - The context of the canvas object.
  * @param {number} mouseX - X coordinate of the mouse.
  */
- export const bar = (ctx, mouseX) => {
+const bar = (ctx, mouseX) => {
     ctx.beginPath();
     ctx.rect(mouseX, (window.innerHeight - 100), barWidth, 25);
     ctx.fillStyle = '#749981';
@@ -153,3 +166,65 @@ function updateBall(ctx, rect, toggleModal) {
     ctx.lineJoin = "round";
     ctx.stroke();
 };
+
+/**
+ * Creates 2D array of X rows containing X columns &
+ * sets a placeholder object to track brick origin coords.
+ */
+const createBrickArray = () => {
+    for (let c = 0; c < brickCols; c++) {
+        bricks[c] = [];
+        for (let r = 0; r < brickRows; r++) {
+          bricks[c][r] = { x: 0, y: 0, status: 1 };
+        }
+      }
+}
+
+/**
+ * Gives each item in the bricks array updated origin coords & draws the bricks.
+ * 
+ * @param {object} ctx - The context of the canvas object.
+ */
+const brickField = (ctx) => {
+    for (let c = 0; c < brickCols; c++) {
+        for (let r = 0; r < brickRows; r++) {
+            if (bricks[c][r].status === 1) {
+                const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+                const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "#C45E5A";
+                ctx.fill();
+                ctx.strokeStyle = '#8C4341';
+                ctx.lineWidth = 1.5;
+                ctx.lineJoin = "round";
+                ctx.stroke();
+            }
+        }
+    }
+};
+
+/**
+ * Determines if the ball collides with a brick.
+ */
+function detectBrickCollision() {
+    for (let c = 0; c < brickCols; c++) {
+        for (let r = 0; r < brickRows; r++) {
+        const currentBrick = bricks[c][r];
+        const width = currentBrick.x + brickWidth;
+        const height = currentBrick.y + brickHeight;
+
+            if (currentBrick.status === 1 &&
+                ballX >= currentBrick.x && 
+                ballX <= width &&
+                ballY >= currentBrick.y && 
+                ballY <= height) {
+                dy = -dy;
+                currentBrick.status = 0;
+            }
+        }
+    }
+};
+  
