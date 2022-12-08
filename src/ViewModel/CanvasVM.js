@@ -86,8 +86,8 @@ export function draw(canvas, toggleModal) {
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
 
-    brickField(ctx);
-    bar(ctx, mouseX); 
+    drawBrickField(ctx);
+    drawBar(ctx, mouseX); 
     updateBall(ctx, rect, toggleModal);
     detectBrickCollision(toggleModal);
     drawScore(ctx);
@@ -123,6 +123,8 @@ function updateBall(ctx, rect, toggleModal) {
         if (ballY > initBallPosY) {
             resetGame();
             toggleModal(true);
+            ballY = initBallPosY;
+            dy = 2;
         }
 
         if (ballY < initBallPosY) {
@@ -133,11 +135,11 @@ function updateBall(ctx, rect, toggleModal) {
 
         ballX += dx;
         ballY += dy;
-        ball(ctx);
+        drawBall(ctx);
     } else {
         ballX = mouseX + (barWidth / 2);
         ballY = initBallPosY;
-        ball(ctx);
+        drawBall(ctx);
     }
 }
 
@@ -146,7 +148,7 @@ function updateBall(ctx, rect, toggleModal) {
  * 
  * @param {object} ctx - The context of the canvas object.
  */
-const ball = (ctx) => {
+const drawBall = (ctx) => {
     ctx.beginPath();
     ctx.arc(ballX, ballY, radius, 0, 2*Math.PI, false);
     ctx.fillStyle = '#7C9CA3';
@@ -162,7 +164,7 @@ const ball = (ctx) => {
  * @param {object} ctx - The context of the canvas object.
  * @param {number} mouseX - X coordinate of the mouse.
  */
-const bar = (ctx, mouseX) => {
+const drawBar = (ctx, mouseX) => {
     ctx.beginPath();
     ctx.rect(mouseX, (window.innerHeight - 100), barWidth, 25);
     ctx.fillStyle = '#749981';
@@ -191,7 +193,7 @@ const createBrickArray = () => {
  * 
  * @param {object} ctx - The context of the canvas object.
  */
-const brickField = (ctx) => {
+const drawBrickField = (ctx) => {
     for (let c = 0; c < brickCols; c++) {
         for (let r = 0; r < brickRows; r++) {
             if (bricks[c][r].status === 1) {
