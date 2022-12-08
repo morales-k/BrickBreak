@@ -18,6 +18,8 @@ const brickLayoutOrigin = (window.innerWidth / 2) - (brickLayoutWidth / 2);
 const brickOffsetLeft = brickLayoutOrigin;
 const brickOffsetTop = 30;
 const bricks = [];
+export let score = 0;
+export let win = false;
 
 /**
  * Sets & scales canvas by dpr to fix blur.
@@ -84,10 +86,11 @@ export function draw(canvas, toggleModal) {
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
 
-    brickField(ctx);
-    bar(ctx, mouseX); 
+    drawBrickField(ctx);
+    drawBar(ctx, mouseX); 
     updateBall(ctx, rect, toggleModal);
-    detectBrickCollision();
+    detectBrickCollision(toggleModal);
+    drawScore(ctx);
 }
 
 /**
@@ -96,7 +99,7 @@ export function draw(canvas, toggleModal) {
  * 
  * @param {object} ctx - The context of the canvas object.
  * @param {object} rect - The bounding rect of the canvas.
- * @param {object} toggleModal - Sets if the modal should display.
+ * @param {Function} toggleModal - Sets if the modal should display.
  */
 function updateBall(ctx, rect, toggleModal) {
     if (bounce) {
@@ -108,30 +111,35 @@ function updateBall(ctx, rect, toggleModal) {
             dy = -dy;
         }
 
+        // Bounce ball off paddle if they collide.
         if (ballX + dx >= mouseX && 
             ballX + dx <= mouseX + barWidth && 
             ballY + dy === initBallPosY) {
-            dx = -dx;
+            let direction = Math.floor(Math.random() * 2);
+            dx = direction === 0 ? dx : -dx;
             dy = -dy;
         }
 
         if (ballY > initBallPosY) {
-            dy = -dy; // Reverse dy so ball moves up on restart.
-            bounce = false;
+            resetGame();
             toggleModal(true);
+            ballY = initBallPosY;
+            dy = 2;
         }
 
         if (ballY < initBallPosY) {
-            toggleModal(false);
+            if (!win) {
+                toggleModal(false);
+            }
         }
 
         ballX += dx;
         ballY += dy;
-        ball(ctx);
+        drawBall(ctx);
     } else {
         ballX = mouseX + (barWidth / 2);
         ballY = initBallPosY;
-        ball(ctx);
+        drawBall(ctx);
     }
 }
 
@@ -140,7 +148,7 @@ function updateBall(ctx, rect, toggleModal) {
  * 
  * @param {object} ctx - The context of the canvas object.
  */
-const ball = (ctx) => {
+const drawBall = (ctx) => {
     ctx.beginPath();
     ctx.arc(ballX, ballY, radius, 0, 2*Math.PI, false);
     ctx.fillStyle = '#7C9CA3';
@@ -156,7 +164,7 @@ const ball = (ctx) => {
  * @param {object} ctx - The context of the canvas object.
  * @param {number} mouseX - X coordinate of the mouse.
  */
-const bar = (ctx, mouseX) => {
+const drawBar = (ctx, mouseX) => {
     ctx.beginPath();
     ctx.rect(mouseX, (window.innerHeight - 100), barWidth, 25);
     ctx.fillStyle = '#749981';
@@ -185,7 +193,7 @@ const createBrickArray = () => {
  * 
  * @param {object} ctx - The context of the canvas object.
  */
-const brickField = (ctx) => {
+const drawBrickField = (ctx) => {
     for (let c = 0; c < brickCols; c++) {
         for (let r = 0; r < brickRows; r++) {
             if (bricks[c][r].status === 1) {
@@ -209,7 +217,7 @@ const brickField = (ctx) => {
 /**
  * Determines if the ball collides with a brick.
  */
-function detectBrickCollision() {
+function detectBrickCollision(toggleModal) {
     for (let c = 0; c < brickCols; c++) {
         for (let r = 0; r < brickRows; r++) {
         const currentBrick = bricks[c][r];
@@ -223,8 +231,35 @@ function detectBrickCollision() {
                 ballY <= height) {
                 dy = -dy;
                 currentBrick.status = 0;
+                score += 10;
+                if (score === (brickRows * brickCols) * 10) {
+                    win = true;
+                    toggleModal(true);
+                }
             }
         }
     }
 };
-  
+
+/**
+ * Displays the score.
+ * 
+ * @param {object} ctx - The context of the canvas object.
+ */
+function drawScore(ctx) {
+    ctx.font = "16px Helvetica";
+    ctx.fillStyle = "#000";
+    ctx.fillText(`Score: ${score}`, 8, 20);
+}
+
+/**
+ * Creates new brick layout, resets game flags & reverses ballY 
+ * direction for next playthrough.
+ */
+export function resetGame() {
+    createBrickArray();
+    score = 0;
+    win = false;
+    bounce = false;
+    dy = -dy;
+}
