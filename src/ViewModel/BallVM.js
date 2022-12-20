@@ -56,7 +56,7 @@ export function updateBall(ctx, rect, toggleModal, bounce, mouseX, barWidth, res
             resetGame();
             toggleModal(true);
             ball.y = initBallPosY;
-            ball.dy = 3;
+            ball.dy = initBallDY;
         }
 
         ball.x += ball.dx;

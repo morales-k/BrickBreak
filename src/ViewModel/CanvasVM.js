@@ -5,7 +5,7 @@ const dpr = window.devicePixelRatio || 1;
 export const barWidth = 120;
 export let mouseX = 100;
 export let score = 0;
-export let win = false;
+export let restart = false;
 let bounce = false;
 
 /**
@@ -29,12 +29,16 @@ export function setupCanvas(canvas, setCanvasReady) {
 }
 
 /**
- * Handles key press events.
+ * Handles key press events. Blurs restart button to prevent space from starting game.
  * 
  * @param {string} key - Pressed key.
  */
 export function handleKeys(key) {
-    if (key === " ") {
+    if (document.activeElement.classList.contains("restart-btn")) {
+        document.activeElement.blur();
+    }
+
+    if (key === " " && !restart) {
         bounce = true;
     }
 }
@@ -81,7 +85,7 @@ export function draw(canvas, toggleModal) {
     if (updateScore) {
         score += 10;
         if (remainingBricks === 0) {
-            win = true;
+            restart = true;
             bounce = false;
             toggleModal(true);
         }
@@ -122,9 +126,16 @@ const drawScore = (ctx) => {
  * direction for next playthrough.
  */
 export function resetGame() {
-    createBrickArray();
-    score = 0;
-    win = false;
+    restart = true;
     bounce = false;
+}
+
+/**
+ * Resets bricks, score, ball.dy & sets restart to false.
+ */
+export function buildLevel() {
+    createBrickArray();
+    restart = false;
+    score = 0;
     ball.dy = initBallDY;
 }
