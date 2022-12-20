@@ -34,11 +34,7 @@ export function setupCanvas(canvas, setCanvasReady) {
  * @param {string} key - Pressed key.
  */
 export function handleKeys(key) {
-    if (document.activeElement.classList.contains("restart-btn")) {
-        document.activeElement.blur();
-    }
-
-    if (key === " " && !restart) {
+    if (key === "ArrowUp" && !restart) {
         bounce = true;
     }
 }

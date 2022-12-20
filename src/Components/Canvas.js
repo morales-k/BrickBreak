@@ -7,7 +7,7 @@ function Canvas() {
   const [showModal, toggleModal] = useState(false);
   const canvas = useRef();
 
-  // Set up resize listener for responsive canvas.
+  // Set up global listeners.
   useEffect(() => {
     setupCanvas(canvas, setCanvasReady);
 
@@ -15,7 +15,7 @@ function Canvas() {
       setupCanvas(canvas, setCanvasReady);
     });
 
-    window.addEventListener('keyup', (e) => handleKeys(e.key));
+    window.addEventListener('keydown', (e) => handleKeys(e.key));
 
      // Clean up
     return () => {
@@ -23,7 +23,7 @@ function Canvas() {
         setupCanvas(canvas, setCanvasReady);
       });
 
-      window.removeEventListener('keyup', (e) => handleKeys(e.key));
+      window.removeEventListener('keydown', (e) => handleKeys(e.key));
     };
   }, []);
 

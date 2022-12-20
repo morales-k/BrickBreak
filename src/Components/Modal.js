@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from './Button';
 import { score, buildLevel } from "../ViewModel/CanvasVM";
 import { remainingBricks } from '../ViewModel/BrickVM';
 
 const Modal = (props) => {
     const { show, toggleModal } = props;
+
+    useEffect(() => {
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'r') {
+                playAgain();
+            }
+        });
+
+        // Clean up
+        return () => {
+        document.removeEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'r') {
+                playAgain();
+            }
+        });
+        };
+    }, []);
+
     const playAgain = () => {
         buildLevel();
         toggleModal(false);
