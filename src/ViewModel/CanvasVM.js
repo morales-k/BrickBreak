@@ -32,27 +32,28 @@ export function setupCanvas(canvas, setCanvasReady) {
  * Handles key press events. Blurs restart button to prevent space from starting game.
  * 
  * @param {string} key - Pressed key.
+ * @param {object} canvas - The canvas element itself.
  */
-export function handleKeys(key) {
-    if (document.activeElement.classList.contains("restart-btn")) {
-        document.activeElement.blur();
-    }
-
-    if (key === " " && !restart) {
+export function handleKeys(key, canvas) {
+    if (key === "ArrowUp" && !restart) {
         bounce = true;
+    } else if (key === "ArrowLeft") {
+        trackBar(mouseX -= 10, canvas);
+    } else if (key === "ArrowRight") {
+        trackBar(mouseX += 10, canvas);
     }
 }
 
 /**
- * Updates mouse coordinates & detects canvas edge.
+ * Updates bar coordinates & detects canvas edge.
  * 
- * @param {object} e - The event object.
+ * @param {Number} barX - The X coordinate of the bar.
  * @param {object} canvas - The canvas element itself.
  */
- export function trackMouse(e, canvas) {
+ export function trackBar(barX, canvas) {
     const rect = canvas.current.getBoundingClientRect();
-    const leftEdgeCollision = e.clientX <= 0 ? true : false;
-    const rightEdgeCollision = e.clientX >= rect.width - barWidth ? true : false;
+    const leftEdgeCollision = barX <= 0 ? true : false;
+    const rightEdgeCollision = barX >= rect.width - barWidth ? true : false;
 
     // Reset coords if mouse touches edge.
     if (leftEdgeCollision) {
@@ -60,7 +61,7 @@ export function handleKeys(key) {
     } else if (rightEdgeCollision) {
         mouseX = rect.width - barWidth;
     } else {
-        mouseX = e.clientX;
+        mouseX = barX;
     }
 }
 
@@ -91,6 +92,7 @@ export function draw(canvas, toggleModal) {
         }
     }
     drawScore(ctx);
+    requestAnimationFrame(() => draw(canvas, toggleModal));
 }
 
 /**

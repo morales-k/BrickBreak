@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { setupCanvas, handleKeys, draw, trackMouse } from '../ViewModel/CanvasVM';
+import { setupCanvas, handleKeys, draw, trackBar } from '../ViewModel/CanvasVM';
 import Modal from './Modal';
 
 function Canvas() {
@@ -7,7 +7,7 @@ function Canvas() {
   const [showModal, toggleModal] = useState(false);
   const canvas = useRef();
 
-  // Set up resize listener for responsive canvas.
+  // Set up global listeners.
   useEffect(() => {
     setupCanvas(canvas, setCanvasReady);
 
@@ -15,7 +15,7 @@ function Canvas() {
       setupCanvas(canvas, setCanvasReady);
     });
 
-    window.addEventListener('keyup', (e) => handleKeys(e.key));
+    window.addEventListener('keydown', (e) => handleKeys(e.key, canvas));
 
      // Clean up
     return () => {
@@ -23,13 +23,13 @@ function Canvas() {
         setupCanvas(canvas, setCanvasReady);
       });
 
-      window.removeEventListener('keyup', (e) => handleKeys(e.key));
+      window.removeEventListener('keydown', (e) => handleKeys(e.key, canvas));
     };
   }, []);
 
   useEffect(() => {
     if (canvasReady) {
-      setInterval(() => draw(canvas, toggleModal), 10);
+      draw(canvas, toggleModal);
     }
   }, [canvasReady]);
 
@@ -38,7 +38,7 @@ function Canvas() {
       <canvas 
         id="canvas" 
         ref={canvas} 
-        onMouseMove={(e) => trackMouse(e, canvas)} />
+        onMouseMove={(e) => trackBar(e.clientX, canvas)} />
       <Modal 
         show={showModal}
         toggleModal={toggleModal} />
