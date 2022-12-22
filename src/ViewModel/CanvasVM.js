@@ -2,11 +2,15 @@ import { createBrickArray, drawBrickField, detectBrickCollision, remainingBricks
 import { ball, initBallDY, updateBall } from "./BallVM";
 
 const dpr = window.devicePixelRatio || 1;
-export const barWidth = 120;
-export let mouseX = 100;
 export let score = 0;
 export let restart = false;
+export const barWidth = 120;
 let bounce = false;
+let barX = 100;
+let arrowStates = {
+    leftArrow: false,
+    rightArrow: false,
+};
 
 /**
  * Sets & scales canvas by dpr to fix blur.
@@ -29,18 +33,23 @@ export function setupCanvas(canvas, setCanvasReady) {
 }
 
 /**
- * Handles key press events. Blurs restart button to prevent space from starting game.
+ * Updates the bar movement based on keys & event type.
  * 
- * @param {string} key - Pressed key.
- * @param {object} canvas - The canvas element itself.
+ * @param {object} e - The event object.
  */
-export function handleKeys(key, canvas) {
-    if (key === "ArrowUp" && !restart) {
+export function handleBarMovement(e) {
+    if (e.type === "mousemove") {
+        arrowStates.leftArrow = false;
+        arrowStates.rightArrow = false;
+        barX = e.clientX;
+    }
+
+    if (e.key === "ArrowUp" && !restart) {
         bounce = true;
-    } else if (key === "ArrowLeft") {
-        trackBar(mouseX -= 10, canvas);
-    } else if (key === "ArrowRight") {
-        trackBar(mouseX += 10, canvas);
+    } else if (e.key === "ArrowLeft") {
+         e.type === "keyup" ? arrowStates.leftArrow = false : arrowStates.leftArrow = true;
+    } else if (e.key === "ArrowRight") {
+        e.type === "keyup" ? arrowStates.rightArrow = false : arrowStates.rightArrow = true;
     }
 }
 
@@ -49,20 +58,24 @@ export function handleKeys(key, canvas) {
  * 
  * @param {Number} barX - The X coordinate of the bar.
  * @param {object} canvas - The canvas element itself.
+ * @returns Number;
  */
  export function trackBar(barX, canvas) {
     const rect = canvas.current.getBoundingClientRect();
     const leftEdgeCollision = barX <= 0 ? true : false;
     const rightEdgeCollision = barX >= rect.width - barWidth ? true : false;
+    let updatedBarX = 0;
 
     // Reset coords if mouse touches edge.
     if (leftEdgeCollision) {
-        mouseX = 0;
+        updatedBarX = 0;
     } else if (rightEdgeCollision) {
-        mouseX = rect.width - barWidth;
+        updatedBarX = rect.width - barWidth;
     } else {
-        mouseX = barX;
+        updatedBarX = barX;
     }
+
+    return updatedBarX;
 }
 
 /**
@@ -78,9 +91,14 @@ export function draw(canvas, toggleModal) {
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
 
+    // Update bar position & redraw after canvas is cleared.
+    let posX = arrowStates.leftArrow === true ? barX -= 10 : arrowStates.rightArrow ? barX += 10 : barX;
+    let updatedBarX = trackBar(posX, canvas);
+    barX = posX;
+
     drawBrickField(ctx);
-    drawBar(ctx, mouseX); 
-    updateBall(ctx, rect, toggleModal, bounce, mouseX, barWidth, resetGame);
+    drawBar(ctx, updatedBarX); 
+    updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth, resetGame);
     let updateScore = detectBrickCollision(ball);
 
     if (updateScore) {
@@ -96,14 +114,14 @@ export function draw(canvas, toggleModal) {
 }
 
 /**
- * Draws a rectangle with it's origin begining at mouseX.
+ * Draws a rectangle with it's origin begining at updatedBarX.
  * 
  * @param {object} ctx - The context of the canvas object.
- * @param {number} mouseX - X coordinate of the mouse.
+ * @param {number} updatedBarX - X coordinate of the mouse.
  */
-const drawBar = (ctx, mouseX) => {
+const drawBar = (ctx, updatedBarX) => {
     ctx.beginPath();
-    ctx.rect(mouseX, (window.innerHeight - 100), barWidth, 25);
+    ctx.rect(updatedBarX, (window.innerHeight - 100), barWidth, 25);
     ctx.fillStyle = '#749981';
     ctx.fill();
     ctx.strokeStyle = '#4A6152';
