@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { setupCanvas, handleKeys, draw, trackBar } from '../ViewModel/CanvasVM';
+import { setupCanvas, handleBarMovement, draw } from '../ViewModel/CanvasVM';
 import Modal from './Modal';
 
 function Canvas() {
@@ -15,7 +15,8 @@ function Canvas() {
       setupCanvas(canvas, setCanvasReady);
     });
 
-    window.addEventListener('keydown', (e) => handleKeys(e.key, canvas));
+    window.addEventListener('keydown', (e) => handleBarMovement(e));
+    window.addEventListener('keyup', (e) => handleBarMovement(e));
 
      // Clean up
     return () => {
@@ -23,7 +24,8 @@ function Canvas() {
         setupCanvas(canvas, setCanvasReady);
       });
 
-      window.removeEventListener('keydown', (e) => handleKeys(e.key, canvas));
+      window.removeEventListener('keydown', (e) => handleBarMovement(e));
+      window.removeEventListener('keyup', (e) => handleBarMovement(e));
     };
   }, []);
 
@@ -38,7 +40,7 @@ function Canvas() {
       <canvas 
         id="canvas" 
         ref={canvas} 
-        onMouseMove={(e) => trackBar(e.clientX, canvas)} />
+        onMouseMove={(e) => handleBarMovement(e)} />
       <Modal 
         show={showModal}
         toggleModal={toggleModal} />

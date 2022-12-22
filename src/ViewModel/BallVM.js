@@ -33,7 +33,7 @@ export const drawBall = (ctx) => {
  * @param {object} rect - The bounding rect of the canvas.
  * @param {Function} toggleModal - Sets if the modal should display.
  */
-export function updateBall(ctx, rect, toggleModal, bounce, mouseX, barWidth, resetGame) {
+export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth, resetGame) {
     if (bounce) {
         if (ball.x + ball.dx > rect.width - radius || ball.x + ball.dx < radius) {
             ball.dx = -ball.dx;
@@ -44,8 +44,8 @@ export function updateBall(ctx, rect, toggleModal, bounce, mouseX, barWidth, res
         }
 
         // Bounce ball off paddle if they collide.
-        if (ball.x + ball.dx >= mouseX && 
-            ball.x + ball.dx <= mouseX + barWidth && 
+        if (ball.x + ball.dx >= updatedBarX && 
+            ball.x + ball.dx <= updatedBarX + barWidth && 
             ball.y + ball.dy === initBallPosY) {
             let direction = Math.floor(Math.random() * 2);
             ball.dx = direction === 0 ? ball.dx : -ball.dx;
@@ -63,7 +63,7 @@ export function updateBall(ctx, rect, toggleModal, bounce, mouseX, barWidth, res
         ball.y += ball.dy;
         drawBall(ctx);
     } else {
-        ball.x = mouseX + (barWidth / 2);
+        ball.x = updatedBarX + (barWidth / 2);
         ball.y = initBallPosY;
         drawBall(ctx);
     }
