@@ -156,6 +156,7 @@ export function resetGame() {
 export function buildLevel() {
     createBrickArray();
     restart = false;
+    bounce = false;
     score = 0;
     ball.dy = initBallDY;
 }
