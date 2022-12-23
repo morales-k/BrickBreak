@@ -1,12 +1,22 @@
 export let radius = 14;
 let initBallPosY = window.innerHeight - (100 + radius);
+let initBallPosX = randomNum();
 export let initBallDY = -3;
 export let ball = {
     x: 0,
     y: initBallPosY,
-    dx: 3,
+    dx: initBallPosX === 0 ? -3 : 3,
     dy: initBallDY,
     radius: radius,
+};
+
+/**
+ * Returns 0 or 1.
+ * 
+ * @returns {Number}
+ */
+function randomNum() {
+    return Math.floor(Math.random() * 2);
 };
 
 
@@ -47,8 +57,8 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
         if (ball.x + ball.dx >= updatedBarX && 
             ball.x + ball.dx <= updatedBarX + barWidth && 
             ball.y + ball.dy === initBallPosY) {
-            let direction = Math.floor(Math.random() * 2);
-            ball.dx = direction === 0 ? ball.dx : -ball.dx;
+            let num = randomNum();
+            ball.dx = num === 0 ? ball.dx : -ball.dx;
             ball.dy = -ball.dy;
         }
 
