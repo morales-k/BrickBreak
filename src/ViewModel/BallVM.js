@@ -28,7 +28,7 @@ function randomNum() {
 export const drawBall = (ctx) => {
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.radius, 0, 2*Math.PI, false);
-    ctx.fillStyle = '#7C9CA3';
+    ctx.fillStyle = '#478CC4';
     ctx.fill();
     ctx.strokeStyle = '#4E6266';
     ctx.lineWidth = 1.5;

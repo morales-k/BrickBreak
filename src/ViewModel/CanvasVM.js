@@ -122,9 +122,9 @@ export function draw(canvas, toggleModal) {
 const drawBar = (ctx, updatedBarX) => {
     ctx.beginPath();
     ctx.rect(updatedBarX, (window.innerHeight - 100), barWidth, 25);
-    ctx.fillStyle = '#749981';
+    ctx.fillStyle = '#51526B';
     ctx.fill();
-    ctx.strokeStyle = '#4A6152';
+    ctx.strokeStyle = '#48485E';
     ctx.lineWidth = 1.5;
     ctx.lineJoin = "round";
     ctx.stroke();
@@ -138,7 +138,7 @@ const drawBar = (ctx, updatedBarX) => {
 const drawScore = (ctx) => {
     ctx.font = "16px Helvetica";
     ctx.fillStyle = "#000";
-    ctx.fillText(`Score: ${score}`, 8, 20);
+    ctx.fillText(`Score: ${score}`, 20, 30);
 }
 
 /**
