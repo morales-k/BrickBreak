@@ -6,7 +6,8 @@ function SplashScreen(props) {
 
   return (
     <>
-      <h1>Title</h1>
+      <h1>Brick Break</h1>
+      <h2 className="description">Break bricks. Don't let the ball fall!</h2>
       <Button
         style="start-btn"
         perform={() => toggleStart(true)}
