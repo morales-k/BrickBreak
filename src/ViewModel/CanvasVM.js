@@ -96,7 +96,7 @@ export function draw(canvas, toggleModal) {
     let updatedBarX = trackBar(posX, canvas);
     barX = posX;
 
-    drawBrickField(ctx);
+    drawBrickField(ctx, rect.width);
     drawBar(ctx, updatedBarX); 
     updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth, resetGame);
     let updateScore = detectBrickCollision(ball);

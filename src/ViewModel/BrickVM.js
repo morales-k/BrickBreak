@@ -2,11 +2,6 @@ const brickRows = 3;
 const brickCols = 5;
 const brickWidth = 75;
 const brickHeight = 20;
-const brickPadding = 10;
-const brickLayoutWidth = brickCols * (brickWidth + brickPadding);
-const brickLayoutOrigin = (window.innerWidth / 2) - (brickLayoutWidth / 2);
-const brickOffsetLeft = brickLayoutOrigin;
-const brickOffsetTop = 50;
 const bricks = [];
 export let remainingBricks = brickRows * brickCols;
 
@@ -28,8 +23,14 @@ export const createBrickArray = () => {
  * Gives each item in the bricks array updated origin coords & draws the bricks.
  * 
  * @param {object} ctx - The context of the canvas object.
+ * @param {Number} canvasWidth - Width of canvas bounding rect. (Not multiplied by dpr).
  */
-export const drawBrickField = (ctx) => {
+export const drawBrickField = (ctx, canvasWidth) => {
+    const brickPadding = 8;
+    const brickOffsetTop = 60;
+    const brickLayoutWidth = brickCols * (brickWidth + brickPadding);
+    const brickOffsetLeft = ((canvasWidth - brickLayoutWidth) / 2) + 4;
+
     for (let c = 0; c < brickCols; c++) {
         for (let r = 0; r < brickRows; r++) {
             if (bricks[c][r].destroyed === 1) {
