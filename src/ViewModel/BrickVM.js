@@ -1,8 +1,5 @@
 const brickRows = 3;
-const brickCols = 5;
-const percentOfCanvas = (50 / 100) * document.body.clientWidth;
-const brickWidth = ((document.body.clientWidth - percentOfCanvas) / brickCols);
-const brickHeight = (18 / 100) * brickWidth; // % of width
+export const brickCols = 5;
 const bricks = [];
 export let remainingBricks = brickRows * brickCols;
 
@@ -25,8 +22,10 @@ export const createBrickArray = () => {
  * 
  * @param {object} ctx - The context of the canvas object.
  * @param {Number} canvasWidth - Width of canvas bounding rect. (Not multiplied by dpr).
+ * @param {Number} brickWidth - Width of each brick, based on a % of canvas size.
+ * @param {Number} brickHeight - Height of each brick, based on a % of brickWidth.
  */
-export const drawBrickField = (ctx, canvasWidth) => {
+export const drawBrickField = (ctx, canvasWidth, brickWidth, brickHeight) => {
     const brickPadding = 8;
     const brickOffsetTop = 60;
     const brickLayoutWidth = brickCols * (brickWidth + brickPadding);
@@ -57,9 +56,11 @@ export const drawBrickField = (ctx, canvasWidth) => {
  * the brick's destroyed status to 0 & reverses ball direction.
  * 
  * @param {object} ball - {x, y, dx, dy, radius}
+ * @param {Number} brickWidth - Width of each brick, based on a % of canvas size.
+ * @param {Number} brickHeight - Height of each brick, based on a % of brickWidth.
  * @returns boolean
  */
-export const detectBrickCollision = (ball) => {
+export const detectBrickCollision = (ball, brickWidth, brickHeight) => {
     for (let c = 0; c < brickCols; c++) {
         for (let r = 0; r < brickRows; r++) {
         const currentBrick = bricks[c][r];
