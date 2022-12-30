@@ -1,10 +1,9 @@
-import { createBrickArray, drawBrickField, detectBrickCollision, remainingBricks } from "./BrickVM";
+import { createBrickArray, drawBrickField, detectBrickCollision, remainingBricks, brickCols } from "./BrickVM";
 import { ball, initBallDY, updateBall } from "./BallVM";
 
 const dpr = window.devicePixelRatio || 1;
 export let score = 0;
 export let restart = false;
-export const barWidth = (10 / 100) * document.body.clientWidth;
 let bounce = false;
 let barX = 100;
 let arrowStates = {
@@ -56,11 +55,12 @@ export function handleBarMovement(e) {
 /**
  * Updates bar coordinates & detects canvas edge.
  * 
+ * @param {Number} barWidth - The width of the bar as a % of the canvas.
  * @param {Number} barX - The X coordinate of the bar.
  * @param {object} canvas - The canvas element itself.
  * @returns Number;
  */
- export function trackBar(barX, canvas) {
+ function trackBar(barWidth, barX, canvas) {
     const rect = canvas.current.getBoundingClientRect();
     const leftEdgeCollision = barX <= 0 ? true : false;
     const rightEdgeCollision = barX >= rect.width - barWidth ? true : false;
@@ -79,7 +79,7 @@ export function handleBarMovement(e) {
 }
 
 /**
- * Clears & redraws the canvas.
+ * Clears & redraws the canvas. Sets components size based on canvas size.
  * 
  * @param {object} canvas - The canvas element itself.
  * @param {function} toggleModal - Sets if the modal should display.
@@ -87,19 +87,26 @@ export function handleBarMovement(e) {
 export function draw(canvas, toggleModal) {
     const ctx = canvas.current.getContext('2d');
     const rect = canvas.current.getBoundingClientRect();
+    const halfOfCanvas = (50 / 100) * rect.width;
+    const brickWidth = ((rect.width - halfOfCanvas) / brickCols);
+    const brickHeight = (18 / 100) * brickWidth;
+    const barWidth = (10 / 100) * rect.width;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
 
-    // Update bar position & redraw after canvas is cleared.
+    // Update bricks & bar/ball position after clearing canvas.
     let posX = arrowStates.leftArrow === true ? barX -= 10 : arrowStates.rightArrow ? barX += 10 : barX;
-    let updatedBarX = trackBar(posX, canvas);
+    let updatedBarX = trackBar(barWidth, posX, canvas);
     barX = posX;
 
-    drawBrickField(ctx, rect.width);
-    drawBar(ctx, updatedBarX); 
+    drawBrickField(ctx, rect.width, brickWidth, brickHeight);
+    drawBar(ctx, barWidth, updatedBarX); 
     updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth, resetGame);
-    let updateScore = detectBrickCollision(ball);
+
+    // If a brick was destroyed, update the score.
+    let updateScore = detectBrickCollision(ball, brickWidth, brickHeight);
 
     if (updateScore) {
         score += 10;
@@ -117,9 +124,10 @@ export function draw(canvas, toggleModal) {
  * Draws a rectangle with it's origin begining at updatedBarX.
  * 
  * @param {object} ctx - The context of the canvas object.
+ * @param {Number} barWidth - The width of the bar as a % of the canvas.
  * @param {number} updatedBarX - X coordinate of the mouse.
  */
-const drawBar = (ctx, updatedBarX) => {
+const drawBar = (ctx, barWidth, updatedBarX) => {
     const barHeight = (12 / 100) * barWidth;
     ctx.beginPath();
     ctx.rect(updatedBarX, (window.innerHeight - 75), barWidth, barHeight);
