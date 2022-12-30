@@ -1,5 +1,5 @@
-export let radius = 14;
-let initBallPosY = window.innerHeight - (100 + radius);
+export let radius = (1 / 100) * document.body.clientWidth;
+let initBallPosY = window.innerHeight - (75 + radius);
 let initBallPosX = randomNum();
 export let initBallDY = -3;
 export let ball = {

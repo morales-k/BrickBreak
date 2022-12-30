@@ -1,7 +1,8 @@
 const brickRows = 3;
 const brickCols = 5;
-const brickWidth = 75;
-const brickHeight = 20;
+const percentOfCanvas = (50 / 100) * document.body.clientWidth;
+const brickWidth = ((document.body.clientWidth - percentOfCanvas) / brickCols);
+const brickHeight = (18 / 100) * brickWidth; // % of width
 const bricks = [];
 export let remainingBricks = brickRows * brickCols;
 
@@ -66,10 +67,10 @@ export const detectBrickCollision = (ball) => {
         const height = currentBrick.y + brickHeight;
 
             if (currentBrick.destroyed === 1 &&
-                ball.x >= currentBrick.x && 
-                ball.x <= width &&
-                ball.y >= currentBrick.y && 
-                ball.y <= height) {
+                ball.x + ball.radius >= currentBrick.x && 
+                ball.x - ball.radius <= width &&
+                ball.y + ball.radius >= currentBrick.y && 
+                ball.y - ball.radius <= height) {
                 ball.dy = -ball.dy;
                 currentBrick.destroyed = 0;
                 remainingBricks--;

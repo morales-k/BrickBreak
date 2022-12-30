@@ -4,7 +4,7 @@ import { ball, initBallDY, updateBall } from "./BallVM";
 const dpr = window.devicePixelRatio || 1;
 export let score = 0;
 export let restart = false;
-export const barWidth = 120;
+export const barWidth = (10 / 100) * document.body.clientWidth;
 let bounce = false;
 let barX = 100;
 let arrowStates = {
@@ -120,8 +120,9 @@ export function draw(canvas, toggleModal) {
  * @param {number} updatedBarX - X coordinate of the mouse.
  */
 const drawBar = (ctx, updatedBarX) => {
+    const barHeight = (12 / 100) * barWidth;
     ctx.beginPath();
-    ctx.rect(updatedBarX, (window.innerHeight - 100), barWidth, 25);
+    ctx.rect(updatedBarX, (window.innerHeight - 75), barWidth, barHeight);
     ctx.fillStyle = '#51526B';
     ctx.fill();
     ctx.strokeStyle = '#48485E';
