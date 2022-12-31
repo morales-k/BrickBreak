@@ -1,4 +1,4 @@
-let initBallPosY = window.innerHeight - (75 + (1 / 100) * document.body.clientWidth);
+let initBallPosY;
 let initBallPosX = randomNum();
 export let initBallDY = -3;
 export let ball = {
@@ -42,8 +42,9 @@ export const drawBall = (ctx) => {
  * @param {Function} toggleModal - Sets if the modal should display.
  */
 export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth, resetGame) {
-    // Add radius to ball object based on passed canvas size.
-    ball.radius = (1 / 100) * rect.width;
+    const barHeight = (12 / 100) * barWidth;
+    initBallPosY = (window.innerHeight - (73.5 + barHeight));
+    ball.radius = (1 / 100) * rect.width; // Add based on passed canvas size.
 
     if (bounce) {
         if (ball.x + ball.dx > rect.width - ball.radius || ball.x + ball.dx < ball.radius) {

@@ -26,7 +26,7 @@ export function setupCanvas(canvas, setCanvasReady) {
     canvas.height = window.innerHeight * dpr;
 
     ctx.scale(dpr, dpr);
-    createBrickArray();
+    buildLevel();
     setCanvasReady(true);
     return ctx;
 }
