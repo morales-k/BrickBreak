@@ -1,10 +1,10 @@
 let initBallPosY;
 let initBallPosX = randomNum();
-export let initBallDY = -3;
+export let initBallDY = -4;
 export let ball = {
     x: 0,
     y: initBallPosY,
-    dx: initBallPosX === 0 ? -3 : 3,
+    dx: initBallPosX === 0 ? -4 : 4,
     dy: initBallDY,
 };
 
@@ -29,7 +29,7 @@ export const drawBall = (ctx) => {
     ctx.fillStyle = '#478CC4';
     ctx.fill();
     ctx.strokeStyle = '#4E6266';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1;
     ctx.stroke();
 };
 
@@ -43,10 +43,17 @@ export const drawBall = (ctx) => {
  */
 export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth, resetGame) {
     const barHeight = (12 / 100) * barWidth;
-    initBallPosY = (window.innerHeight - (73.5 + barHeight));
-    ball.radius = (1 / 100) * rect.width; // Add based on passed canvas size.
+    initBallPosY = Math.floor((window.innerHeight - (73 + barHeight)));
+    ball.radius = Math.floor((1 / 100) * rect.width); // Add based on passed canvas size.
 
     if (bounce) {
+        // Bounce ball off paddle if they collide.
+        if (ball.x + ball.dx >= updatedBarX && 
+            ball.x + ball.dx <= updatedBarX + barWidth && 
+            ball.y + ball.dy === initBallPosY) {
+            handlePaddleCollision(ball, barWidth, updatedBarX);
+        }
+
         if (ball.x + ball.dx > rect.width - ball.radius || ball.x + ball.dx < ball.radius) {
             ball.dx = -ball.dx;
         }
@@ -55,16 +62,7 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
             ball.dy = -ball.dy;
         }
 
-        // Bounce ball off paddle if they collide.
-        if (ball.x + ball.dx >= updatedBarX && 
-            ball.x + ball.dx <= updatedBarX + barWidth && 
-            ball.y + ball.dy === initBallPosY) {
-            let num = randomNum();
-            ball.dx = num === 0 ? ball.dx : -ball.dx;
-            ball.dy = -ball.dy;
-        }
-
-        if (ball.y > initBallPosY) {
+        if (ball.y + ball.dy > initBallPosY) {
             resetGame();
             toggleModal(true);
             ball.y = initBallPosY;
@@ -75,8 +73,32 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
         ball.y += ball.dy;
         drawBall(ctx);
     } else {
-        ball.x = updatedBarX + (barWidth / 2);
+        ball.x = Math.floor(updatedBarX + (barWidth / 2));
         ball.y = initBallPosY;
         drawBall(ctx);
     }
+}
+
+/**
+ * Updates ball dx based on where the ball collides with the paddle.
+ * 
+ * @param {Object} ball - {x, y, dx, dy, radius}
+ * @param {Number} barWidth - Total width of the paddle.
+ * @param {Number} updatedBarX - The paddles current X origin.
+ */
+function handlePaddleCollision(ball, barWidth, updatedBarX) {
+    const currentBarEnd = updatedBarX + barWidth;
+    const barCenter = Math.floor(currentBarEnd - (barWidth / 2));
+    const centerStart = barCenter - ball.radius;
+    const centerEnd = barCenter + ball.radius;
+
+    if (ball.x >= centerStart && ball.x <= centerEnd) {
+        ball.dx = 0;
+    } else if (ball.x < centerStart) {
+        ball.dx === 0 ? ball.dx = -Math.abs(initBallDY) : ball.dx = -Math.abs(ball.dx);
+    } else if (ball.x > centerStart) {
+        ball.dx === 0 ? ball.dx = Math.abs(initBallDY) : ball.dx = Math.abs(ball.dx);
+    }
+
+    ball.dy = -ball.dy;
 }

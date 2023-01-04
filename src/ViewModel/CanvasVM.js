@@ -90,7 +90,7 @@ export function draw(canvas, toggleModal) {
     const halfOfCanvas = (50 / 100) * rect.width;
     const brickWidth = ((rect.width - halfOfCanvas) / brickCols);
     const brickHeight = (18 / 100) * brickWidth;
-    const barWidth = (10 / 100) * rect.width;
+    const barWidth = Math.floor((10 / 100) * rect.width);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.width = rect.width * dpr;
