@@ -43,10 +43,17 @@ export const drawBall = (ctx) => {
  */
 export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth, resetGame) {
     const barHeight = (12 / 100) * barWidth;
-    initBallPosY = (window.innerHeight - (73.5 + barHeight));
-    ball.radius = (1 / 100) * rect.width; // Add based on passed canvas size.
+    initBallPosY = Math.floor((window.innerHeight - (73 + barHeight)));
+    ball.radius = Math.floor((1 / 100) * rect.width); // Add based on passed canvas size.
 
     if (bounce) {
+        // Bounce ball off paddle if they collide.
+        if (ball.x + ball.dx >= updatedBarX && 
+            ball.x + ball.dx <= updatedBarX + barWidth && 
+            ball.y + ball.dy === initBallPosY) {
+            handlePaddleCollision(ball);
+        }
+
         if (ball.x + ball.dx > rect.width - ball.radius || ball.x + ball.dx < ball.radius) {
             ball.dx = -ball.dx;
         }
@@ -55,16 +62,7 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
             ball.dy = -ball.dy;
         }
 
-        // Bounce ball off paddle if they collide.
-        if (ball.x + ball.dx >= updatedBarX && 
-            ball.x + ball.dx <= updatedBarX + barWidth && 
-            ball.y + ball.dy === initBallPosY) {
-            let num = randomNum();
-            ball.dx = num === 0 ? ball.dx : -ball.dx;
-            ball.dy = -ball.dy;
-        }
-
-        if (ball.y > initBallPosY) {
+        if (ball.y + ball.dy > initBallPosY) {
             resetGame();
             toggleModal(true);
             ball.y = initBallPosY;
@@ -75,8 +73,14 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
         ball.y += ball.dy;
         drawBall(ctx);
     } else {
-        ball.x = updatedBarX + (barWidth / 2);
+        ball.x = Math.floor(updatedBarX + (barWidth / 2));
         ball.y = initBallPosY;
         drawBall(ctx);
     }
+}
+
+function handlePaddleCollision(ball) {
+    let num = randomNum();
+    ball.dx = num === 0 ? ball.dx : -ball.dx;
+    ball.dy = -ball.dy;
 }
