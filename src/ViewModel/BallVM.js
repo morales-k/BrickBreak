@@ -1,10 +1,10 @@
 let initBallPosY;
 let initBallPosX = randomNum();
-export let initBallDY = -3;
+export let initBallDY = -4;
 export let ball = {
     x: 0,
     y: initBallPosY,
-    dx: initBallPosX === 0 ? -3 : 3,
+    dx: initBallPosX === 0 ? -4 : 4,
     dy: initBallDY,
 };
 
@@ -29,7 +29,7 @@ export const drawBall = (ctx) => {
     ctx.fillStyle = '#478CC4';
     ctx.fill();
     ctx.strokeStyle = '#4E6266';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1;
     ctx.stroke();
 };
 
@@ -51,7 +51,7 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
         if (ball.x + ball.dx >= updatedBarX && 
             ball.x + ball.dx <= updatedBarX + barWidth && 
             ball.y + ball.dy === initBallPosY) {
-            handlePaddleCollision(ball);
+            handlePaddleCollision(ball, barWidth, updatedBarX);
         }
 
         if (ball.x + ball.dx > rect.width - ball.radius || ball.x + ball.dx < ball.radius) {
@@ -79,8 +79,26 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
     }
 }
 
-function handlePaddleCollision(ball) {
-    let num = randomNum();
-    ball.dx = num === 0 ? ball.dx : -ball.dx;
+/**
+ * Updates ball dx based on where the ball collides with the paddle.
+ * 
+ * @param {Object} ball - {x, y, dx, dy, radius}
+ * @param {Number} barWidth - Total width of the paddle.
+ * @param {Number} updatedBarX - The paddles current X origin.
+ */
+function handlePaddleCollision(ball, barWidth, updatedBarX) {
+    const currentBarEnd = updatedBarX + barWidth;
+    const barCenter = Math.floor(currentBarEnd - (barWidth / 2));
+    const centerStart = barCenter - ball.radius;
+    const centerEnd = barCenter + ball.radius;
+
+    if (ball.x >= centerStart && ball.x <= centerEnd) {
+        ball.dx = 0;
+    } else if (ball.x < centerStart) {
+        ball.dx === 0 ? ball.dx = -Math.abs(initBallDY) : ball.dx = -Math.abs(ball.dx);
+    } else if (ball.x > centerStart) {
+        ball.dx === 0 ? ball.dx = Math.abs(initBallDY) : ball.dx = Math.abs(ball.dx);
+    }
+
     ball.dy = -ball.dy;
 }
