@@ -43,7 +43,7 @@ export const drawBall = (ctx) => {
  */
 export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth, resetGame) {
     const barHeight = (12 / 100) * barWidth;
-    initBallPosY = Math.floor((window.innerHeight - (73 + barHeight)));
+    initBallPosY = Math.floor((window.innerHeight - 75) - ball.radius);
     ball.radius = Math.floor((1 / 100) * rect.width); // Add based on passed canvas size.
 
     if (bounce) {
@@ -89,8 +89,8 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
 function handlePaddleCollision(ball, barWidth, updatedBarX) {
     const currentBarEnd = updatedBarX + barWidth;
     const barCenter = Math.floor(currentBarEnd - (barWidth / 2));
-    const centerStart = barCenter - ball.radius;
-    const centerEnd = barCenter + ball.radius;
+    const centerStart = barCenter - (ball.radius / 2);
+    const centerEnd = barCenter + (ball.radius / 2);
 
     if (ball.x >= centerStart && ball.x <= centerEnd) {
         ball.dx = 0;
