@@ -128,7 +128,7 @@ export function draw(canvas, toggleModal) {
  * @param {number} updatedBarX - X coordinate of the mouse.
  */
 const drawBar = (ctx, barWidth, updatedBarX) => {
-    const barHeight = (12 / 100) * barWidth;
+    const barHeight = Math.floor((12 / 100) * barWidth);
     ctx.beginPath();
     ctx.rect(updatedBarX, (window.innerHeight - 75), barWidth, barHeight);
     ctx.fillStyle = '#51526B';
