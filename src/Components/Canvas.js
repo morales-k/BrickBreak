@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { setupCanvas, handleBarMovement, draw } from '../ViewModel/CanvasVM';
+import { setupCanvas, handleEvent, draw } from '../ViewModel/CanvasVM';
 import Modal from './Modal';
 
 function Canvas() {
@@ -15,9 +15,9 @@ function Canvas() {
       setupCanvas(canvas, setCanvasReady);
     });
 
-    window.addEventListener('keydown', (e) => handleBarMovement(e));
-    window.addEventListener('keyup', (e) => handleBarMovement(e));
-    window.addEventListener('dblclick', (e) => handleBarMovement(e));
+    window.addEventListener('keydown', (e) => handleEvent(e));
+    window.addEventListener('keyup', (e) => handleEvent(e));
+    window.addEventListener('dblclick', (e) => handleEvent(e));
 
      // Clean up
     return () => {
@@ -25,9 +25,9 @@ function Canvas() {
         setupCanvas(canvas, setCanvasReady);
       });
 
-      window.removeEventListener('keydown', (e) => handleBarMovement(e));
-      window.removeEventListener('keyup', (e) => handleBarMovement(e));
-      window.removeEventListener('dblclick', (e) => handleBarMovement(e));
+      window.removeEventListener('keydown', (e) => handleEvent(e));
+      window.removeEventListener('keyup', (e) => handleEvent(e));
+      window.removeEventListener('dblclick', (e) => handleEvent(e));
     };
   }, []);
 
@@ -42,7 +42,7 @@ function Canvas() {
       <canvas 
         id="canvas" 
         ref={canvas} 
-        onMouseMove={(e) => handleBarMovement(e)} />
+        onMouseMove={(e) => handleEvent(e)} />
       <Modal 
         show={showModal}
         toggleModal={toggleModal} />
