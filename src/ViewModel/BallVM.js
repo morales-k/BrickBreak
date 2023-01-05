@@ -89,8 +89,8 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
 function handlePaddleCollision(ball, barWidth, updatedBarX) {
     const currentBarEnd = updatedBarX + barWidth;
     const barCenter = Math.floor(currentBarEnd - (barWidth / 2));
-    const centerStart = barCenter - ball.radius;
-    const centerEnd = barCenter + ball.radius;
+    const centerStart = barCenter - (ball.radius / 2);
+    const centerEnd = barCenter + (ball.radius / 2);
 
     if (ball.x >= centerStart && ball.x <= centerEnd) {
         ball.dx = 0;

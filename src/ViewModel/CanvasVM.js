@@ -41,9 +41,9 @@ export function handleBarMovement(e) {
         arrowStates.leftArrow = false;
         arrowStates.rightArrow = false;
         barX = e.clientX;
-    }
+    } 
 
-    if (e.key === "ArrowUp" && !restart) {
+    if ((e.type === "dblclick" || e.key === "ArrowUp") && !restart) {
         bounce = true;
     } else if (e.key === "ArrowLeft") {
          e.type === "keyup" ? arrowStates.leftArrow = false : arrowStates.leftArrow = true;

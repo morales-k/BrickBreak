@@ -17,6 +17,7 @@ function Canvas() {
 
     window.addEventListener('keydown', (e) => handleBarMovement(e));
     window.addEventListener('keyup', (e) => handleBarMovement(e));
+    window.addEventListener('dblclick', (e) => handleBarMovement(e));
 
      // Clean up
     return () => {
@@ -26,6 +27,7 @@ function Canvas() {
 
       window.removeEventListener('keydown', (e) => handleBarMovement(e));
       window.removeEventListener('keyup', (e) => handleBarMovement(e));
+      window.removeEventListener('dblclick', (e) => handleBarMovement(e));
     };
   }, []);
 
