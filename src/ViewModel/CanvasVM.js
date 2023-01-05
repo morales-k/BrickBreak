@@ -32,11 +32,11 @@ export function setupCanvas(canvas, setCanvasReady) {
 }
 
 /**
- * Updates the bar movement based on keys & event type.
+ * Handles all user events.
  * 
  * @param {object} e - The event object.
  */
-export function handleBarMovement(e) {
+export function handleEvent(e) {
     if (e.type === "mousemove") {
         arrowStates.leftArrow = false;
         arrowStates.rightArrow = false;
@@ -50,6 +50,25 @@ export function handleBarMovement(e) {
     } else if (e.key === "ArrowRight") {
         e.type === "keyup" ? arrowStates.rightArrow = false : arrowStates.rightArrow = true;
     }
+}
+
+/**
+ * Calculates & returns the current bar position.
+ * 
+ * @param {Number} maxWidth - The width of the canvas bounding rect.
+ * @param {Number} barWidth - The width of the bar.
+ * @returns 
+ */
+function calculateBarX(maxWidth, barWidth) {
+    let updatedPosX = barX;
+
+    if (!!arrowStates.leftArrow && barX >= 0) {
+        updatedPosX = barX -= 10;
+    } else if (!!arrowStates.rightArrow && barX <= maxWidth - barWidth) {
+        updatedPosX = barX += 10;
+    }
+    
+    return updatedPosX;
 }
 
 /**
@@ -91,15 +110,13 @@ export function draw(canvas, toggleModal) {
     const brickWidth = ((rect.width - halfOfCanvas) / brickCols);
     const brickHeight = (18 / 100) * brickWidth;
     const barWidth = Math.floor((10 / 100) * rect.width);
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
 
-    // Update bricks & bar/ball position after clearing canvas.
-    let posX = arrowStates.leftArrow === true ? barX -= 10 : arrowStates.rightArrow ? barX += 10 : barX;
-    let updatedBarX = trackBar(barWidth, posX, canvas);
-    barX = posX;
+    // After clearing canvas, update brick, ball and bar positions.
+    barX = calculateBarX(rect.width, barWidth);
+    let updatedBarX = trackBar(barWidth, barX, canvas);
 
     drawBrickField(ctx, rect.width, brickWidth, brickHeight);
     drawBar(ctx, barWidth, updatedBarX); 
