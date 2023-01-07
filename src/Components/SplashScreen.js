@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Button from './Button'
+import Modal from './Modal';
 
 function SplashScreen(props) {
   const { toggleStart } = props;
+  const [showModal, toggleModal] = useState(false);
 
   return (
     <>
@@ -12,6 +14,15 @@ function SplashScreen(props) {
         style="start-btn"
         perform={() => toggleStart(true)}
         text="Start" />
+      <h3 
+        className="info"
+        onClick={() => toggleModal(!showModal)}>
+        Controls
+      </h3>
+      <Modal
+        show={showModal}
+        toggleModal={toggleModal}
+        infoModal={true} />
     </>
   )
 }

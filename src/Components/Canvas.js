@@ -45,7 +45,8 @@ function Canvas() {
         onMouseMove={(e) => handleEvent(e)} />
       <Modal 
         show={showModal}
-        toggleModal={toggleModal} />
+        toggleModal={toggleModal}
+        infoModal={false} />
     </>
   )
 }

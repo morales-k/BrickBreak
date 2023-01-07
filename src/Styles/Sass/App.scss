@@ -38,3 +38,19 @@ body {
   font-weight: normal;
   margin-top: 0.5%;
 }
+
+.info {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 1em;
+}
+
+.info:hover {
+  cursor: pointer;
+  color: goldenrod;
+}
+
+.bold {
+  font-weight: bold;
+}
