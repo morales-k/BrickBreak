@@ -1,5 +1,6 @@
 import { createBrickArray, drawBrickField, detectBrickCollision, remainingBricks, brickCols } from "./BrickVM";
 import { ball, initBallDY, updateBall } from "./BallVM";
+import { setVolume, effectVolume, playEffect } from "./SoundVM";
 
 const dpr = window.devicePixelRatio || 1;
 export let score = 0;
@@ -131,6 +132,8 @@ export function draw(canvas, toggleModal) {
             restart = true;
             bounce = false;
             toggleModal(true);
+            setVolume('music', 0);
+            playEffect(effectVolume, 'win');
         }
     }
     drawScore(ctx);
