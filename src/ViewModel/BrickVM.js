@@ -1,6 +1,7 @@
+import { effectVolume, playEffect } from "./SoundVM";
+const bricks = [];
 const brickRows = 3;
 export const brickCols = 5;
-const bricks = [];
 export let remainingBricks = brickRows * brickCols;
 
 /**
@@ -72,6 +73,7 @@ export const detectBrickCollision = (ball, brickWidth, brickHeight) => {
                 ball.x - ball.radius <= width &&
                 ball.y + ball.radius >= currentBrick.y && 
                 ball.y - ball.radius <= height) {
+                playEffect(effectVolume, 'pop');
                 ball.dy = -ball.dy;
                 currentBrick.destroyed = 0;
                 remainingBricks--;

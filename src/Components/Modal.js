@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Button from './Button';
 import { score, buildLevel } from "../ViewModel/CanvasVM";
 import { remainingBricks } from '../ViewModel/BrickVM';
+import { playBackgroundMusic } from '../ViewModel/SoundVM';
 import SoundControl from './SoundControl';
 import PlayControl from './PlayControl';
 
@@ -28,6 +29,7 @@ const Modal = (props) => {
     const playAgain = () => {
         buildLevel();
         toggleModal(false);
+        playBackgroundMusic(1);
     }
 
     return (
