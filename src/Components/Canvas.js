@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { setupCanvas, handleEvent, draw } from '../ViewModel/CanvasVM';
+import { musicVolume, playBackgroundMusic } from '../ViewModel/SoundVM';
 import Modal from './Modal';
 
 function Canvas() {
@@ -10,6 +11,7 @@ function Canvas() {
   // Set up global listeners.
   useEffect(() => {
     setupCanvas(canvas, setCanvasReady);
+    playBackgroundMusic(musicVolume);
 
     window.addEventListener('resize', () => {
       setupCanvas(canvas, setCanvasReady);

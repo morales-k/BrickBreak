@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import Button from './Button';
 import { score, buildLevel } from "../ViewModel/CanvasVM";
 import { remainingBricks } from '../ViewModel/BrickVM';
+import SoundControl from './SoundControl';
+import PlayControl from './PlayControl';
 
 const Modal = (props) => {
     const { show, toggleModal, infoModal } = props;
@@ -42,16 +44,8 @@ const Modal = (props) => {
                         text="Play again" />
                 </> :
                 <>
-                    <h1>Controls</h1>
-                    <p>
-                        <span className="bold">Launch:</span> Double click <span className="icon">&#128433;&#65039;</span> or press <span className="icon">&uarr;</span>.
-                    </p>
-                    <p>
-                        <span className="bold">Move:</span> Use <span className="icon">&#128433;&#65039;</span> or press <span className="icon">&larr;</span> and <span className="icon">&rarr;</span>.
-                    </p>
-                    <p>
-                        <span className="bold">Restart:</span> Press <span>R</span>
-                    </p>
+                    <PlayControl />
+                    <SoundControl />
                     <Button
                         style="controls-btn"
                         perform={() => toggleModal(false)}

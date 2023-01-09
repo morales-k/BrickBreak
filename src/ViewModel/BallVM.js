@@ -1,3 +1,4 @@
+import { effectVolume, playEffect, setVolume } from "./SoundVM";
 let initBallPosY;
 let initBallPosX = randomNum();
 export let initBallDY = -4;
@@ -65,6 +66,8 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
         if (ball.y + ball.dy > initBallPosY) {
             resetGame();
             toggleModal(true);
+            setVolume('music', 0);
+            playEffect(effectVolume, 'lose');
             ball.y = initBallPosY;
             ball.dy = initBallDY;
         }
