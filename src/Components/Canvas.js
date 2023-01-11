@@ -44,7 +44,8 @@ function Canvas() {
       <canvas 
         id="canvas" 
         ref={canvas} 
-        onMouseMove={(e) => handleEvent(e)} />
+        onMouseMove={(e) => handleEvent(e)}
+        onTouchMove={(e) => handleEvent(e)} />
       <Modal 
         show={showModal}
         toggleModal={toggleModal}
