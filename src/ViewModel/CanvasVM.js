@@ -38,6 +38,12 @@ export function setupCanvas(canvas, setCanvasReady) {
  * @param {object} e - The event object.
  */
 export function handleEvent(e) {
+    if (e.type === "touchmove") {
+        arrowStates.leftArrow = false;
+        arrowStates.rightArrow = false;
+        barX = e.touches[0].clientX;
+    }
+
     if (e.type === "mousemove") {
         arrowStates.leftArrow = false;
         arrowStates.rightArrow = false;
