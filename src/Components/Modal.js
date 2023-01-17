@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Button from './Button';
 import { score, buildLevel } from "../ViewModel/CanvasVM";
-import { remainingBricks } from '../ViewModel/BrickVM';
+import { brickLayout } from '../ViewModel/BrickVM';
 import { playBackgroundMusic } from '../ViewModel/SoundVM';
 import SoundControl from './SoundControl';
 import PlayControl from './PlayControl';
@@ -37,7 +37,7 @@ const Modal = (props) => {
             {
                 !infoModal ?
                 <>
-                    <h1>{remainingBricks === 0 ? "Winner!" : "Game Over"}</h1>
+                    <h1>{brickLayout.remainingBricks === 0 ? "Winner!" : "Game Over"}</h1>
                     <h2>You scored {score}</h2>
                     <Button
                         id="restartBtn"

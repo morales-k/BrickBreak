@@ -1,4 +1,4 @@
-import { createBrickArray, drawBrickField, detectBrickCollision, remainingBricks, brickCols } from "./BrickVM";
+import { createBrickArray, drawBrickField, detectBrickCollision, brickLayout } from "./BrickVM";
 import { ball, initBallDY, updateBall } from "./BallVM";
 import { setVolume, effectVolume, playEffect } from "./SoundVM";
 
@@ -11,6 +11,7 @@ let arrowStates = {
     leftArrow: false,
     rightArrow: false,
 };
+let level = 1;
 
 /**
  * Sets & scales canvas by dpr to fix blur.
@@ -114,7 +115,7 @@ export function draw(canvas, toggleModal) {
     const ctx = canvas.current.getContext('2d');
     const rect = canvas.current.getBoundingClientRect();
     const halfOfCanvas = (50 / 100) * rect.width;
-    const brickWidth = ((rect.width - halfOfCanvas) / brickCols);
+    const brickWidth = ((rect.width - halfOfCanvas) / brickLayout.cols);
     const brickHeight = (18 / 100) * brickWidth;
     const barWidth = Math.floor((10 / 100) * rect.width);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -125,7 +126,7 @@ export function draw(canvas, toggleModal) {
     barX = calculateBarX(rect.width, barWidth);
     let updatedBarX = trackBar(barWidth, barX, canvas);
 
-    drawBrickField(ctx, rect.width, brickWidth, brickHeight);
+    drawBrickField(ctx, rect.width, brickWidth, brickHeight, brickLayout);
     drawBar(ctx, barWidth, updatedBarX); 
     updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth, resetGame);
 
@@ -134,12 +135,13 @@ export function draw(canvas, toggleModal) {
 
     if (updateScore) {
         score += 10;
-        if (remainingBricks === 0) {
+        if (brickLayout.remainingBricks === 0) {
             restart = true;
             bounce = false;
             toggleModal(true);
             setVolume('music', 0);
             playEffect(effectVolume, 'win');
+            level += 1;
         }
     }
     drawScore(ctx);
@@ -189,7 +191,12 @@ export function resetGame() {
  * Resets bricks, score, ball.dy & sets restart to false.
  */
 export function buildLevel() {
-    createBrickArray();
+    if (level === 2) {
+        brickLayout.rows = 4;
+        brickLayout.cols = 5;
+    }
+
+    createBrickArray(brickLayout, level);
     restart = false;
     bounce = false;
     score = 0;
