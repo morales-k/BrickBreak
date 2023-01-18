@@ -1,6 +1,6 @@
 import { createBrickArray, drawBrickField, detectBrickCollision, brickLayout } from "./BrickVM";
 import { ball, initBallDY, updateBall } from "./BallVM";
-import { setVolume, effectVolume, playEffect } from "./SoundVM";
+import { setVolume, musicVolume, effectVolume, playBackgroundMusic, playEffect } from "./SoundVM";
 
 const dpr = window.devicePixelRatio || 1;
 export let score = 0;
@@ -11,6 +11,8 @@ let arrowStates = {
     leftArrow: false,
     rightArrow: false,
 };
+export let gameWon = false;
+const maxLevel = 2;
 let level = 1;
 
 /**
@@ -30,6 +32,7 @@ export function setupCanvas(canvas, setCanvasReady) {
     ctx.scale(dpr, dpr);
     buildLevel();
     setCanvasReady(true);
+    playBackgroundMusic(musicVolume);
     return ctx;
 }
 
@@ -136,12 +139,18 @@ export function draw(canvas, toggleModal) {
     if (updateScore) {
         score += 10;
         if (brickLayout.remainingBricks === 0) {
+            if (level !== maxLevel) {
+                level += 1;
+            } else {
+                level = 1;
+                gameWon = true;
+            }
+
             restart = true;
             bounce = false;
             toggleModal(true);
             setVolume('music', 0);
             playEffect(effectVolume, 'win');
-            level += 1;
         }
     }
     drawScore(ctx);
@@ -183,6 +192,8 @@ const drawScore = (ctx) => {
  * direction for next playthrough.
  */
 export function resetGame() {
+    gameWon = false;
+    level = 1;
     restart = true;
     bounce = false;
 }
@@ -191,7 +202,13 @@ export function resetGame() {
  * Resets bricks, score, ball.dy & sets restart to false.
  */
 export function buildLevel() {
-    if (level === 2) {
+    gameWon = false;
+
+    if (level === 1) {
+        brickLayout.rows = 3;
+        brickLayout.cols = 5;
+        score = 0;
+    } else if (level === 2) {
         brickLayout.rows = 4;
         brickLayout.cols = 5;
     }
@@ -199,6 +216,5 @@ export function buildLevel() {
     createBrickArray(brickLayout, level);
     restart = false;
     bounce = false;
-    score = 0;
     ball.dy = initBallDY;
 }
