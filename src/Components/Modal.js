@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import Button from './Button';
-import { score, buildLevel } from "../ViewModel/CanvasVM";
-import { remainingBricks } from '../ViewModel/BrickVM';
-import { playBackgroundMusic } from '../ViewModel/SoundVM';
+import { score, buildLevel, gameWon } from "../ViewModel/CanvasVM";
+import { brickLayout } from '../ViewModel/BrickVM';
+import { playBackgroundMusic, musicVolume } from '../ViewModel/SoundVM';
 import SoundControl from './SoundControl';
 import PlayControl from './PlayControl';
 
@@ -29,7 +29,7 @@ const Modal = (props) => {
     const playAgain = () => {
         buildLevel();
         toggleModal(false);
-        playBackgroundMusic(1);
+        playBackgroundMusic(musicVolume);
     }
 
     return (
@@ -37,13 +37,20 @@ const Modal = (props) => {
             {
                 !infoModal ?
                 <>
-                    <h1>{remainingBricks === 0 ? "Winner!" : "Game Over"}</h1>
+                    <h1>
+                        {
+                        gameWon ? 
+                        "WINNER!" : 
+                        brickLayout.remainingBricks > 0 ? "GAME OVER" :
+                        "LEVEL COMPLETE"
+                        }
+                    </h1>
                     <h2>You scored {score}</h2>
                     <Button
                         id="restartBtn"
                         style="restart-btn"
                         perform={() => playAgain()}
-                        text="Play again" />
+                        text={!gameWon && brickLayout.remainingBricks === 0 ? "Next level" : "Play again"} />
                 </> :
                 <>
                     <PlayControl />
