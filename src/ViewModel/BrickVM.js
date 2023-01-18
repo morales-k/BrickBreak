@@ -100,8 +100,10 @@ export const detectBrickCollision = (ball, brickWidth, brickHeight) => {
                 playEffect(effectVolume, 'pop');
                 ball.dy = -ball.dy;
                 currentBrick.destroyed--;
-                brickLayout.remainingBricks--;
-                return currentBrick.destroyed === 0;
+                if (currentBrick.destroyed === 0) {
+                    brickLayout.remainingBricks--;
+                    return true;
+                }
             }
         }
     }
