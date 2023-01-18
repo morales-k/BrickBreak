@@ -24,9 +24,6 @@ export function playEffect(effectVolume, type) {
 export const setVolume = (type, vol) => {
     if (type === 'music') {
         musicVolume = vol;
-        if (vol === 0) {
-            background.pause();
-        }
     } else if (type === 'effect') {
         effectVolume = vol;
     }
