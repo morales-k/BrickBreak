@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/BrickBreak/static/css/main.085ed76a.css",
-    "main.js": "/BrickBreak/static/js/main.b7919452.js",
+    "main.js": "/BrickBreak/static/js/main.b2f47a3e.js",
     "static/media/theme.mp3": "/BrickBreak/static/media/theme.f3d42ea8402db093e879.mp3",
     "static/media/win.mp3": "/BrickBreak/static/media/win.4c04bbc539116b0a76bd.mp3",
     "static/media/lose.mp3": "/BrickBreak/static/media/lose.438bb14ccbc50ddc96d2.mp3",
     "static/media/pop.mp3": "/BrickBreak/static/media/pop.9345bae0c8e999084ba1.mp3",
     "index.html": "/BrickBreak/index.html",
     "main.085ed76a.css.map": "/BrickBreak/static/css/main.085ed76a.css.map",
-    "main.b7919452.js.map": "/BrickBreak/static/js/main.b7919452.js.map"
+    "main.b2f47a3e.js.map": "/BrickBreak/static/js/main.b2f47a3e.js.map"
   },
   "entrypoints": [
     "static/css/main.085ed76a.css",
-    "static/js/main.b7919452.js"
+    "static/js/main.b2f47a3e.js"
   ]
 }
