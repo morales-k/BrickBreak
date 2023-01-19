@@ -43,7 +43,6 @@ export const drawBall = (ctx) => {
  * @param {Function} toggleModal - Sets if the modal should display.
  */
 export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth, resetGame) {
-    const barHeight = (12 / 100) * barWidth;
     initBallPosY = Math.floor((window.innerHeight - 75) - ball.radius);
     ball.radius = Math.floor((1 / 100) * rect.width); // Add based on passed canvas size.
 
@@ -90,17 +89,27 @@ export function updateBall(ctx, rect, toggleModal, bounce, updatedBarX, barWidth
  * @param {Number} updatedBarX - The paddles current X origin.
  */
 function handlePaddleCollision(ball, barWidth, updatedBarX) {
-    const currentBarEnd = updatedBarX + barWidth;
-    const barCenter = Math.floor(currentBarEnd - (barWidth / 2));
-    const centerStart = barCenter - (ball.radius / 2);
-    const centerEnd = barCenter + (ball.radius / 2);
+    const areaWidth = barWidth / 5;
+    const outsideLeftEnd = updatedBarX + areaWidth;
+    const innerLeftStart = outsideLeftEnd + 1;
+    const innerLeftEnd = innerLeftStart + areaWidth;
+    const centerStart = innerLeftEnd + 1;
+    const centerEnd = centerStart + areaWidth;
+    const innerRightStart = centerEnd + 1;
+    const innerRightEnd = innerRightStart + areaWidth;
+    const outsideRightStart = innerRightEnd + 1;
+    const outsideRightEnd = outsideRightStart + areaWidth;
 
-    if (ball.x >= centerStart && ball.x <= centerEnd) {
+    if (ball.x >= updatedBarX && ball.x <= outsideLeftEnd) {
+        ball.dx = -Math.abs(initBallDY);
+    } else if (ball.x >= innerLeftStart && ball.x <= innerLeftEnd) {
+        ball.dx = -Math.abs(initBallDY + 2);
+    } else if (ball.x >= centerStart && ball.x <= centerEnd) {
         ball.dx = 0;
-    } else if (ball.x < centerStart) {
-        ball.dx === 0 ? ball.dx = -Math.abs(initBallDY) : ball.dx = -Math.abs(ball.dx);
-    } else if (ball.x > centerStart) {
-        ball.dx === 0 ? ball.dx = Math.abs(initBallDY) : ball.dx = Math.abs(ball.dx);
+    } else if (ball.x >= innerRightStart && ball.x <= innerRightEnd) {
+        ball.dx = Math.abs(initBallDY + 2);
+    } else if (ball.x >= outsideRightStart && ball.x <= outsideRightEnd) {
+        ball.dx = Math.abs(initBallDY);
     }
 
     ball.dy = -ball.dy;
