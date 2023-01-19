@@ -22,7 +22,7 @@ export const drawBar = (ctx, barWidth, updatedBarX) => {
  * 
  * @param {Number} barWidth - The width of the bar as a % of the canvas.
  * @param {Number} barX - The X coordinate of the bar.
- * @param {object} canvas - The canvas element itself.
+ * @param {Object} canvas - The canvas element itself.
  * @returns Number;
  */
 export function trackBar(barWidth, barX, canvas) {
