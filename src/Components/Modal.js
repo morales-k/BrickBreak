@@ -33,7 +33,9 @@ const Modal = (props) => {
     }
 
     return (
-        <div className={show ? "modal" : "hidden"}>
+        <div 
+            data-testid="modalTest"
+            className={show ? "modal" : "hidden"}>
             {
                 !infoModal ?
                 <>

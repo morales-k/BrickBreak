@@ -2,7 +2,9 @@ import React from 'react';
 
 const PlayControl = () => {
     return (
-      <div className="control-container">
+      <div 
+          data-testid="playControlTest"  
+          className="control-container">
           <h1>Controls</h1>
           <p>
               <span className="bold">Launch:</span> Double click <span className="icon">&#128433;&#65039;</span> or press <span className="icon">&uarr;</span>.
