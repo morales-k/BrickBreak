@@ -40,6 +40,7 @@ function Canvas() {
   return (
     <>
       <canvas 
+        data-testid="canvasTest"
         id="canvas" 
         ref={canvas} 
         onMouseMove={(e) => handleEvent(e)}
