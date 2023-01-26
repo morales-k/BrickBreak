@@ -13,7 +13,7 @@ let arrowStates = {
     rightArrow: false,
 };
 export let gameWon = false;
-const maxLevel = 2;
+const maxLevel = 3;
 let level = 1;
 
 /**
@@ -147,6 +147,9 @@ export function buildLevel() {
         score = 0;
     } else if (level === 2) {
         brickLayout.rows = 4;
+        brickLayout.cols = 5;
+    } else if (level === 3) {
+        brickLayout.rows = 5;
         brickLayout.cols = 5;
     }
 

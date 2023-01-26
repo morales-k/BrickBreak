@@ -1,11 +1,11 @@
 import { effectVolume, playEffect, setVolume } from "./SoundVM";
 let initBallPosY;
 let initBallPosX = randomNum();
-export let initBallDY = -4;
+export let initBallDY = -5;
 export let ball = {
     x: 0,
     y: initBallPosY,
-    dx: initBallPosX === 0 ? -4 : 4,
+    dx: initBallPosX === 0 ? -5 : 5,
     dy: initBallDY,
 };
 
@@ -103,11 +103,11 @@ function handlePaddleCollision(ball, barWidth, updatedBarX) {
     if (ball.x >= updatedBarX && ball.x <= outsideLeftEnd) {
         ball.dx = -Math.abs(initBallDY);
     } else if (ball.x >= innerLeftStart && ball.x <= innerLeftEnd) {
-        ball.dx = -Math.abs(initBallDY + 2);
+        ball.dx = -Math.abs(initBallDY + 3);
     } else if (ball.x >= centerStart && ball.x <= centerEnd) {
         ball.dx = 0;
     } else if (ball.x >= innerRightStart && ball.x <= innerRightEnd) {
-        ball.dx = Math.abs(initBallDY + 2);
+        ball.dx = Math.abs(initBallDY + 3);
     } else if (ball.x >= outsideRightStart && ball.x <= outsideRightEnd) {
         ball.dx = Math.abs(initBallDY);
     }
