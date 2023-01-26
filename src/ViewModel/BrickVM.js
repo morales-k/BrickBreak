@@ -17,10 +17,9 @@ export const createBrickArray = (brickLayout, level) => {
     for (let c = 0; c < brickLayout.cols; c++) {
         brickLayout.bricks[c] = [];
         for (let r = 0; r < brickLayout.rows; r++) {
-            // Level 1, 2nd row, each even column is skipped.
-            // Level 2, row 2, for each even brick is strong.
-            let skipBrick = level === 1 && r === 2 && c % 2 === 0 ? true : false;
-            let strong = level === 2 && r === 2 && c % 2 === 0 ? true : false;
+            let skipBrick = brickShouldBeSkipped(level, r, c);
+            let strong = brickShouldBeStrong(level, r, c);
+
             brickLayout.bricks[c][r] = { 
                 x: 0, 
                 y: 0, 
@@ -37,6 +36,57 @@ export const createBrickArray = (brickLayout, level) => {
         // Add remaining brick count.
         brickLayout.remainingBricks = (brickLayout.bricks.length * brickLayout.bricks[c].length) - allSkippedBricks;
     }
+}
+
+/**
+ * Determines if a brick should be skipped based on level & brickLayout.
+ * 
+ * @param {Number} level - The current game level.
+ * @param {Number} r - The current [r] value for brickLayouts.bricks.
+ * @param {Number} c - The current [c] value for brickLayouts.bricks.
+ * @returns boolean
+ */
+function brickShouldBeSkipped(level, r, c) {
+    let skip = false;
+
+    if (level === 1) {
+        // Skip each even brick in the 2nd row.
+        if ((r === 2) && (c % 2 === 0)) {
+            skip = true;
+        }
+    } else if (level === 2) {
+        // Skip row 2, cols 1 & 3.
+        if ((r === 2) && (c === 1 || c === 3)) {
+            skip = true;
+        }
+    } else if (level === 3) {
+        // Skip first & last brick in even columns.
+        if ((r === 2) && (c === 2) ||
+            (r % 2 !== 0) && (c === 0 || c === 4)) {
+            skip = true;
+        }
+    }
+
+    return skip;
+}
+
+function brickShouldBeStrong(level, r, c) {
+    let strong = false;
+
+    if (level === 2) {
+        // Each odd brick in the 2nd, and even brick in the 4th row is strong.
+        if ((r === 1) && (c % 2 === 0) ||
+            (r === 3) && (c % 2 !== 0)) {
+            strong = true;
+        }
+    } else if (level === 3) {
+        // Each even column brick in an even row is strong.
+        if ((r % 2 !== 0) && (c % 2 !== 0)) {
+            strong = true;
+        }
+    }
+
+    return strong;
 }
 
 /**
