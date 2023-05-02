@@ -1,0 +1,1 @@
+A classic brick break game with multiple levels and sound controls. Built using React and a responsive canvas. Move the paddle to destroy bricks with the ball. Don't let the ball fall!
